@@ -3,8 +3,12 @@
 [![Board](https://img.shields.io/badge/ESP32--C3-SoC-blue)](https://www.espressif.com/en/products/socs/esp32-c3)
 [![Framework](https://img.shields.io/badge/ESP--IDF-v5.0%2B-red)](https://github.com/espressif/esp-idf)
 [![Cloud](https://img.shields.io/badge/Cloud-Node.js%20%7C%20Express%20%7C%20SQLite%20%7C%20DuckDB-green)](./cloud-dashboard)
+[![Secret scan](https://github.com/guritnom/cu/actions/workflows/secret-scan.yml/badge.svg)](https://github.com/guritnom/cu/actions/workflows/secret-scan.yml)
+[![License](https://img.shields.io/badge/License-AGPL--3.0%20%2F%20Apache--2.0-informational)](./LICENSE.md)
 
 The **CU100** is an open-source, multi-channel smart energy monitoring system. It combines an **ESP32-C3 edge device** (sampling 4 CT current channels and ambient temperature) with a **real-time cloud web platform** featuring user device management, privacy settings, and a dedicated admin back-office.
+
+![CU100 cloud dashboard — live telemetry](assets/dashboard_live.gif)
 
 ---
 
