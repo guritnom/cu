@@ -1,0 +1,41 @@
+# ESP-IDF Build & Configuration
+build/
+build_*_*/
+sdkconfig
+sdkconfig.old
+
+# Python & Dependencies
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+pytest_embedded_log/
+.managed_components/
+dependencies.lock
+
+# IDE and Antigravity-specific Artifacts
+.vscode/
+.antigravity/
+*.log
+
+# Cloud Dashboard Artifacts
+cloud-dashboard/node_modules/
+cloud-dashboard/dist/
+cloud-dashboard/.vite/
+cloud-dashboard/labels/
+cloud-dashboard/.DS_Store
+cloud-dashboard/.env
+.env
+*.db
+*.duckdb
+*.duckdb.wal
+
+.cache/
+
+# ESP-IDF third-party components (regenerated via idf.py)
+cu100/managed_components/
+
+# Marketing site & internal notes (not part of the open repo)
+landing-page/
+index.html
+notes/

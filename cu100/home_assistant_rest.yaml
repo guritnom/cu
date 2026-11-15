@@ -1,0 +1,116 @@
+# Home Assistant REST Integration Configuration for CU100
+# 
+# Copy and paste this configuration into your Home Assistant 'configuration.yaml'
+# Replace '192.168.1.XXX' with the actual IP address of your CU100 device.
+
+rest:
+  - resource: http://192.168.1.XXX/api/sensors
+    scan_interval: 10
+    sensor:
+      # Temperature Sensor (DS18B20)
+      - name: "CU100 Temperature"
+        unique_id: "cu100_temperature"
+        value_template: "{{ value_json.temperature | round(2) }}"
+        unit_of_measurement: "°C"
+        device_class: "temperature"
+        state_class: "measurement"
+
+      # Current Sensors (Channels 1 - 4)
+      - name: "CU100 SCT Sensor 1 Current"
+        unique_id: "cu100_current_ch1"
+        value_template: "{{ value_json.current_ch1 | round(2) }}"
+        unit_of_measurement: "A"
+        device_class: "current"
+        state_class: "measurement"
+
+      - name: "CU100 SCT Sensor 2 Current"
+        unique_id: "cu100_current_ch2"
+        value_template: "{{ value_json.current_ch2 | round(2) }}"
+        unit_of_measurement: "A"
+        device_class: "current"
+        state_class: "measurement"
+
+      - name: "CU100 SCT Sensor 3 Current"
+        unique_id: "cu100_current_ch3"
+        value_template: "{{ value_json.current_ch3 | round(2) }}"
+        unit_of_measurement: "A"
+        device_class: "current"
+        state_class: "measurement"
+
+      - name: "CU100 SCT Sensor 4 Current"
+        unique_id: "cu100_current_ch4"
+        value_template: "{{ value_json.current_ch4 | round(2) }}"
+        unit_of_measurement: "A"
+        device_class: "current"
+        state_class: "measurement"
+
+      # Power Sensors in Watts (Channels 1 - 4)
+      - name: "CU100 SCT Sensor 1 Power"
+        unique_id: "cu100_power_ch1"
+        value_template: "{{ value_json.power_ch1 | round(2) }}"
+        unit_of_measurement: "W"
+        device_class: "power"
+        state_class: "measurement"
+
+      - name: "CU100 SCT Sensor 2 Power"
+        unique_id: "cu100_power_ch2"
+        value_template: "{{ value_json.power_ch2 | round(2) }}"
+        unit_of_measurement: "W"
+        device_class: "power"
+        state_class: "measurement"
+
+      - name: "CU100 SCT Sensor 3 Power"
+        unique_id: "cu100_power_ch3"
+        value_template: "{{ value_json.power_ch3 | round(2) }}"
+        unit_of_measurement: "W"
+        device_class: "power"
+        state_class: "measurement"
+
+      - name: "CU100 SCT Sensor 4 Power"
+        unique_id: "cu100_power_ch4"
+        value_template: "{{ value_json.power_ch4 | round(2) }}"
+        unit_of_measurement: "W"
+        device_class: "power"
+        state_class: "measurement"
+
+      # Accumulated Energy in kWh (Channels 1 - 4)
+      - name: "CU100 SCT Sensor 1 Energy"
+        unique_id: "cu100_kwh_ch1"
+        value_template: "{{ value_json.kwh_ch1 | round(3) }}"
+        unit_of_measurement: "kWh"
+        device_class: "energy"
+        state_class: "total_increasing"
+
+      - name: "CU100 SCT Sensor 2 Energy"
+        unique_id: "cu100_kwh_ch2"
+        value_template: "{{ value_json.kwh_ch2 | round(3) }}"
+        unit_of_measurement: "kWh"
+        device_class: "energy"
+        state_class: "total_increasing"
+
+      - name: "CU100 SCT Sensor 3 Energy"
+        unique_id: "cu100_kwh_ch3"
+        value_template: "{{ value_json.kwh_ch3 | round(3) }}"
+        unit_of_measurement: "kWh"
+        device_class: "energy"
+        state_class: "total_increasing"
+
+      - name: "CU100 SCT Sensor 4 Energy"
+        unique_id: "cu100_kwh_ch4"
+        value_template: "{{ value_json.kwh_ch4 | round(3) }}"
+        unit_of_measurement: "kWh"
+        device_class: "energy"
+        state_class: "total_increasing"
+
+      # System Diagnostics
+      - name: "CU100 Free Heap"
+        unique_id: "cu100_free_heap"
+        value_template: "{{ (value_json.free_heap / 1024) | round(1) }}"
+        unit_of_measurement: "kB"
+        icon: "mdi:memory"
+
+# Optional REST Command to reset accumulated kWh from Home Assistant UI
+rest_command:
+  cu100_reset_kwh:
+    url: "http://192.168.1.XXX/api/sensors/reset_kwh"
+    method: post

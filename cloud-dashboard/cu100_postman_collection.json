@@ -1,0 +1,446 @@
+{
+  "info": {
+    "_postman_id": "cu100-cloud-api-v1",
+    "name": "CU100 Cloud Energy Monitor API",
+    "description": "Complete API Collection for CU100 Cloud Energy Monitor including Authentication, Personal API Tokens, Telemetry History (DuckDB), Device Management, and Admin Back-Office endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "apiKey",
+      "value": "cu100_sk_replace_with_your_token",
+      "type": "string"
+    },
+    {
+      "key": "deviceId",
+      "value": "cu100-demo",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "User Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"your_password\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Authenticates user or admin with username/email and password. Returns JWT token and sets HttpOnly cookie."
+          }
+        },
+        {
+          "name": "Get Current User Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "me"]
+            },
+            "description": "Verifies session or API key and returns authenticated user details."
+          }
+        },
+        {
+          "name": "User Logout",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "logout"]
+            },
+            "description": "Clears session cookies."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Personal API Tokens",
+      "item": [
+        {
+          "name": "List API Tokens",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/user/tokens",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "user", "tokens"]
+            },
+            "description": "Lists active Personal API Tokens for the authenticated user."
+          }
+        },
+        {
+          "name": "Generate API Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{apiKey}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Integration Key\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/user/tokens",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "user", "tokens"]
+            },
+            "description": "Generates a new personal secret API token (`cu100_sk_...`). The secret key is returned ONCE."
+          }
+        },
+        {
+          "name": "Revoke API Token",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/user/tokens/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "user", "tokens", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Revokes and permanently deletes an API token by ID."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Telemetry Historical Data (DuckDB)",
+      "item": [
+        {
+          "name": "Get Telemetry History (Using API Token / Bearer)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/telemetry/history?device_id={{deviceId}}&resolution=5m",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "telemetry", "history"],
+              "query": [
+                {
+                  "key": "device_id",
+                  "value": "{{deviceId}}",
+                  "description": "Device serial ID"
+                },
+                {
+                  "key": "resolution",
+                  "value": "5m",
+                  "description": "Aggregation bucket: raw, 1m, 5m, 1h, 1d"
+                },
+                {
+                  "key": "start",
+                  "value": "",
+                  "disabled": true,
+                  "description": "Unix timestamp in ms"
+                },
+                {
+                  "key": "end",
+                  "value": "",
+                  "disabled": true,
+                  "description": "Unix timestamp in ms"
+                }
+              ]
+            },
+            "description": "Queries historical telemetry metrics (voltage, current per channel, power, temperature, kWh estimate) from DuckDB."
+          }
+        },
+        {
+          "name": "Get Telemetry History (Using X-API-Key Header)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/telemetry/history?device_id={{deviceId}}&resolution=1h",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "telemetry", "history"],
+              "query": [
+                {
+                  "key": "device_id",
+                  "value": "{{deviceId}}"
+                },
+                {
+                  "key": "resolution",
+                  "value": "1h"
+                }
+              ]
+            },
+            "description": "Queries historical telemetry using X-API-Key header."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Device Management",
+      "item": [
+        {
+          "name": "List User Devices",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/devices",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "devices"]
+            },
+            "description": "Lists all devices owned by user (or all devices if admin)."
+          }
+        },
+        {
+          "name": "Check Device Access",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/devices/check-access/:deviceId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "devices", "check-access", ":deviceId"],
+              "variable": [
+                {
+                  "key": "deviceId",
+                  "value": "{{deviceId}}"
+                }
+              ]
+            },
+            "description": "Checks if public or private device is registered and accessible."
+          }
+        },
+        {
+          "name": "Register New Device",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{apiKey}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"device_id\": \"a4cf1289b0c4\",\n  \"name\": \"Main Panel Monitor\",\n  \"location\": \"Basement Panel\",\n  \"visibility\": \"public\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/devices",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "devices"]
+            },
+            "description": "Registers a new CU100 device under the user's account."
+          }
+        },
+        {
+          "name": "Update Device",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{apiKey}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Kitchen Sub-panel\",\n  \"location\": \"Kitchen Utility Room\",\n  \"visibility\": \"private\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/devices/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "devices", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Updates device details or visibility setting (public/private)."
+          }
+        },
+        {
+          "name": "Delete Device",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/devices/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "devices", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Deletes a device registration."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Management",
+      "item": [
+        {
+          "name": "Get Users List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "users"]
+            },
+            "description": "Admin endpoint to list all users in the system."
+          }
+        },
+        {
+          "name": "Get Audit Log",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/audit-log?limit=100",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "audit-log"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "100"
+                }
+              ]
+            },
+            "description": "Admin endpoint to view recent audit log records."
+          }
+        },
+        {
+          "name": "Get Global Retention Policy",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/retention",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "retention"]
+            },
+            "description": "Gets global system telemetry data retention policy."
+          }
+        },
+        {
+          "name": "Update Global Retention Policy",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{apiKey}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"retention_period\": \"30d\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/retention",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "retention"]
+            },
+            "description": "Updates global system retention policy ('7d', '30d', or '180d')."
+          }
+        }
+      ]
+    }
+  ]
+}
