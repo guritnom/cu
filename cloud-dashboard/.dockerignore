@@ -1,0 +1,14 @@
+node_modules
+dist
+.vite
+labels
+data
+.env
+*.db
+*.duckdb
+*.duckdb.wal
+.DS_Store
+Dockerfile
+docker-compose.yml
+.dockerignore
+.git

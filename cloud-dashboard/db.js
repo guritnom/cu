@@ -1,9 +1,13 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
+const fs = require('fs');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 
-const DB_PATH = path.join(__dirname, 'cu100_cloud.db');
+// Persist databases in DATA_DIR when set (Docker volume), else beside the app
+const DATA_DIR = process.env.DATA_DIR;
+if (DATA_DIR) fs.mkdirSync(DATA_DIR, { recursive: true });
+const DB_PATH = path.join(DATA_DIR || __dirname, 'cu100_cloud.db');
 
 const db = new sqlite3.Database(DB_PATH, (err) => {
     if (err) {

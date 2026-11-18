@@ -91,6 +91,23 @@ flowchart TD
 
 ## 🚀 Quick Start Guide
 
+### 0. Cloud Dashboard — Docker (fastest)
+
+```bash
+git clone https://github.com/guritnom/cu
+cd cu/cloud-dashboard
+docker compose up -d
+```
+
+Open **http://localhost:3000** — that's it. A `JWT_SECRET` is generated and
+persisted to `./data/.jwt_secret` on first run; the admin account password is
+random-generated and printed once in the container logs:
+`docker compose logs dashboard | grep "one-time admin password"`
+
+To point the dashboard at your MQTT broker, create a `.env` next to
+`docker-compose.yml` (see [`cloud-dashboard/.env.example`](./cloud-dashboard/.env.example))
+and set `MQTT_HOST` / `MQTT_USER` / `MQTT_PASS`. All state lives in `./data/`.
+
 ### 1. ESP32-C3 Firmware Setup
 
 #### Prerequisites

@@ -1,0 +1,20 @@
+services:
+  dashboard:
+    build: .
+    image: currentusage/dashboard:latest
+    container_name: cu100-dashboard
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/app/data
+    # Optional: load configuration from .env (JWT_SECRET, MQTT_HOST, MQTT_USER,
+    # MQTT_PASS, SMTP_*, RECAPTCHA_*). A JWT_SECRET is auto-generated and
+    # persisted in ./data/.jwt_secret if not provided.
+    env_file:
+      - path: .env
+        required: false
+    restart: unless-stopped
+
+# MQTT broker: point MQTT_HOST in .env at your broker (self-hosted mosquitto,
+# messages.currentusage.com, or a LAN broker). The CU100 device publishes
+# telemetry to cu100/<SERIAL>/state.
